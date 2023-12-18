@@ -3,7 +3,6 @@ import tarfile
 
 import pyarrow as pa
 import pyarrow.flight
-import pyarrow.parquet
 import adbc_driver_sqlite.dbapi as dbapi
 
 import os
