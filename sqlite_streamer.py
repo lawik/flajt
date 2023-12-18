@@ -17,18 +17,20 @@ class FlightServer(pa.flight.FlightServerBase):
         self._location = location
         self._connection = dbapi.connect(location)
         self.name = "podcasts"
-        self.limit = 100
+        self.limit = 10000
         self.offset = 0
         # Make_ sample query to derive schema
         result = self._query(0, self.limit)
         #print("fetched 100")
         #print(result.schema)
         self._sample = result
-        print(dir(result))
+        #print(dir(result))
 
     def _query(self, offset, limit):
+        print("fetching offset", offset, "limit", limit)
         with self._connection.cursor() as cur:
-            cur.execute("SELECT * FROM podcasts limit ? offset ?", parameters=(limit, offset))
+            #cur.execute("SELECT * FROM podcasts limit ? offset ?", parameters=(limit, offset))
+            cur.execute("SELECT id, title, description FROM podcasts limit ? offset ?", parameters=(limit, offset))
             result = cur.fetch_arrow_table()
             return result
 
@@ -64,7 +66,7 @@ class FlightServer(pa.flight.FlightServerBase):
         result = self._query(self.offset, self.limit)
         self.offset += self.limit
         print("new offset", self.offset)
-        print(result)
+        #print(result)
         return pa.flight.RecordBatchStream(result)
 
     def list_actions(self, context):
